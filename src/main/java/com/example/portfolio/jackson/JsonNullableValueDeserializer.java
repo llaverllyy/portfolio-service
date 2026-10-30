@@ -1,15 +1,17 @@
 package com.example.portfolio.jackson;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.databind.BeanProperty;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.deser.ContextualDeserializer;
 import org.openapitools.jackson.nullable.JsonNullable;
-import tools.jackson.core.JacksonException;
-import tools.jackson.core.JsonParser;
-import tools.jackson.core.JsonToken;
-import tools.jackson.databind.BeanProperty;
-import tools.jackson.databind.DeserializationContext;
-import tools.jackson.databind.JavaType;
-import tools.jackson.databind.ValueDeserializer;
 
-public class JsonNullableValueDeserializer extends ValueDeserializer<JsonNullable<?>> {
+import java.io.IOException;
+
+public class JsonNullableValueDeserializer extends JsonDeserializer<JsonNullable<?>> implements ContextualDeserializer {
 
     private final JavaType valueType;
 
@@ -22,7 +24,7 @@ public class JsonNullableValueDeserializer extends ValueDeserializer<JsonNullabl
     }
 
     @Override
-    public JsonNullable<?> deserialize(JsonParser parser, DeserializationContext context) throws JacksonException {
+    public JsonNullable<?> deserialize(JsonParser parser, DeserializationContext context) throws IOException {
         if (parser.currentToken() == JsonToken.VALUE_NULL) {
             return JsonNullable.of(null);
         }
@@ -36,7 +38,7 @@ public class JsonNullableValueDeserializer extends ValueDeserializer<JsonNullabl
     }
 
     @Override
-    public ValueDeserializer<?> createContextual(DeserializationContext context, BeanProperty property) {
+    public JsonDeserializer<?> createContextual(DeserializationContext context, BeanProperty property) {
         JavaType wrapperType = property != null ? property.getType() : context.getContextualType();
         JavaType nestedType = wrapperType == null
                 ? context.constructType(Object.class)
@@ -46,7 +48,7 @@ public class JsonNullableValueDeserializer extends ValueDeserializer<JsonNullabl
     }
 
     @Override
-    public Object getNullValue(DeserializationContext context) {
+    public JsonNullable<?> getNullValue(DeserializationContext context) {
         return JsonNullable.of(null);
     }
 }

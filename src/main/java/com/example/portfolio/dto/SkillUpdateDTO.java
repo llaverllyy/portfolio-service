@@ -4,7 +4,7 @@ import com.example.portfolio.jackson.JsonNullableValueDeserializer;
 import lombok.Getter;
 import lombok.Setter;
 import org.openapitools.jackson.nullable.JsonNullable;
-import tools.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 @Getter
 @Setter
